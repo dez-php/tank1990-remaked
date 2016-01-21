@@ -1,13 +1,11 @@
-package dez.game.tank.main;
-
-import dez.game.tank.display.Window;
-import dez.game.tank.utils.Time;
+package dez.game.engine;
 
 import java.awt.*;
+import java.awt.Window;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Random;
 
-public class Game implements Runnable {
+public class Engine implements Runnable {
 
     private Graphics2D graphics2D;
     private Thread gameThread;
@@ -113,4 +111,5 @@ public class Game implements Runnable {
     public void closeGame() {
 
     }
+
 }

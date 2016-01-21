@@ -1,4 +1,4 @@
-package dez.game.tank.display;
+package dez.game.engine.graphics;
 
 import dez.game.tank.main.Settings;
 
