@@ -1,6 +1,6 @@
 package dez.game.tank.display;
 
-import dez.game.tank.main.GameConfig;
+import dez.game.tank.main.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,6 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Window {
 
@@ -18,7 +17,7 @@ public class Window {
     public static BufferedImage bufferedImage;
     public static BufferStrategy bufferStrategy;
     public static int[] bufferedData;
-    public static Graphics graphics2D;
+    public static Graphics2D graphics2D;
 
     public static boolean isCreated = false;
 
@@ -29,51 +28,54 @@ public class Window {
         }
 
         windowContent = new Canvas();
-        windowContent.setSize(new Dimension(GameConfig.WIDTH, GameConfig.HEIGHT));
+        windowContent.setSize(new Dimension(Settings.WIDTH, Settings.HEIGHT));
 
-        window = new JFrame(GameConfig.WINDOW_TITLE);
+        window = new JFrame(Settings.WINDOW_TITLE);
+
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.getContentPane().add(windowContent);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
-        window.setIconImage(new ImageIcon(GameConfig.RESOURCE_FOLDER + GameConfig.ICON_PATH).getImage());
+        window.setIconImage(new ImageIcon(Settings.RESOURCE_FOLDER + Settings.ICON_PATH).getImage());
 
-        bufferedImage = new BufferedImage(GameConfig.WIDTH, GameConfig.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        bufferedImage = new BufferedImage(Settings.WIDTH, Settings.HEIGHT, BufferedImage.TYPE_INT_ARGB);
         bufferedData = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
 
-        graphics2D = bufferedImage.getGraphics();
-        ((Graphics2D) graphics2D).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D = (Graphics2D) bufferedImage.getGraphics();
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         windowContent.createBufferStrategy(3);
         bufferStrategy = windowContent.getBufferStrategy();
 
         isCreated = true;
 
-        float num = 0;
-
-        while (true) {
-            Arrays.fill(bufferedData, 0xff000000);
-
-            getGraphics().setColor(Color.CYAN);
-
-            num += 0.01;
-
-            System.out.println(Math.sin(num));
-
-            getGraphics().fillOval(GameConfig.WIDTH / 2 - 50 + (int)(Math.sin(num) * 50), GameConfig.HEIGHT / 2 - 50, 100, 100);
-
-            Graphics g = bufferStrategy.getDrawGraphics();
-            g.drawImage(bufferedImage, 0, 0, null);
-            bufferStrategy.show();
-        }
-
-
-
     }
 
-    public static Graphics getGraphics() {
+    public static void updateBuffer() {
+        bufferStrategy.getDrawGraphics().drawImage(bufferedImage, 0, 0, null);
+        bufferStrategy.show();
+    }
+
+    public static void clear() {
+        Arrays.fill(bufferedData, Settings.CLEAR_COLOR);
+    }
+
+    public static Graphics2D getGraphics() {
         return graphics2D;
     }
+
+    public static JFrame getWindow() {
+        return window;
+    }
+
+    public static void close() {
+        if (! isCreated) {
+            return;
+        }
+
+        window.dispose();
+    }
+
 }
