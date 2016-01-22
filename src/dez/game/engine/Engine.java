@@ -2,6 +2,7 @@ package dez.game.engine;
 
 import dez.game.engine.graphics.Drawable;
 import dez.game.engine.graphics.GameWindow;
+import dez.game.engine.graphics.LayerManager;
 import dez.game.engine.graphics.LayerType;
 import dez.game.engine.helpers.ResourceConfig;
 import dez.game.engine.helpers.Time;
@@ -18,6 +19,7 @@ abstract public class Engine implements Runnable {
     private Properties properties;
 
     protected Map<LayerType, List<Drawable>> layers;
+    protected LayerManager layerManager;
 
     private boolean isRunning   = false;
 
@@ -29,7 +31,10 @@ abstract public class Engine implements Runnable {
 
     public Engine() throws IOException {
         properties = new ResourceConfig("resource/config.properties").loadProperties();
+
         layers = new HashMap<>();
+        layerManager = new LayerManager();
+
         GameWindow.create(800, 600, properties.getProperty("title"));
         graphics2D = GameWindow.getGraphics();
     }
@@ -78,7 +83,13 @@ abstract public class Engine implements Runnable {
 
     private void renderData() {
         GameWindow.clear();
+
+        if(! layerManager.getAllLayers().isEmpty()) {
+            layerManager.getAllLayers().clear();
+        }
+
         this.render();
+
         GameWindow.updateBuffer();
     }
 
@@ -123,8 +134,8 @@ abstract public class Engine implements Runnable {
                 }
             }
 
-            if(totalElapsedTime >= (Time.ONE_NANO_SECOND / 2)) {
-                GameWindow.setTitle(" [FPS: " + (counters[0] * 2) + ", UPD: " + (counters[1] * 2) + ", UPD LOST: " + (counters[2] * 2) + "]");
+            if(totalElapsedTime >= Time.ONE_NANO_SECOND) {
+                GameWindow.setTitle(" [FPS: " + counters[0] + ", UPD: " + counters[1] + ", UPD LOST: " + counters[2] + "]");
                 totalElapsedTime = 0;
                 Arrays.fill(counters, 0);
             }

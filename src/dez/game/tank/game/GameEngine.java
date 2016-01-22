@@ -3,12 +3,10 @@ package dez.game.tank.game;
 import dez.game.engine.Engine;
 import dez.game.engine.graphics.Drawable;
 import dez.game.engine.graphics.GameWindow;
-import dez.game.engine.graphics.LayerType;
+import dez.game.engine.graphics.LayerManager;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Random;
 
 public class GameEngine extends Engine {
 
@@ -27,11 +25,11 @@ public class GameEngine extends Engine {
     @Override
     protected void render() {
 
-        layers.clear();
+//        layers.clear();
 
-        for(LayerType layerType : LayerType.values()) {
+        /*for(LayerType layerType : LayerType.values()) {
             layers.put(layerType, new LinkedList<Drawable>());
-        }
+        }*/
 
         Drawable drawable = new Drawable() {
 
@@ -45,9 +43,9 @@ public class GameEngine extends Engine {
 
         };
 
-        layers.get(LayerType.PLAYER).add(drawable);
+        layerManager.getLayers(LayerManager.LayerType.PLAYER).add(drawable);
 
-        layers.get(LayerType.LEVEL).add(new Drawable() {
+        layerManager.getLayers(LayerManager.LayerType.PLAYER).add(new Drawable() {
 
             public void draw(Graphics graphics, int value) {
                 graphics.setColor(Color.GREEN);
@@ -59,13 +57,18 @@ public class GameEngine extends Engine {
 
         });
 
-        for (Drawable d : layers.get(LayerType.PLAYER)) {
+        for (Drawable d : layerManager.getLayers(LayerManager.LayerType.LEVEL_BOTTOM)) {
+            d.draw(getGraphics2D(), - (int) (Math.sin(this.i) * 200));
+        }
+
+        for (Drawable d : layerManager.getLayers(LayerManager.LayerType.PLAYER)) {
             d.draw(getGraphics2D(), (int) (Math.sin(this.i) * 200));
         }
 
-        for (Drawable d : layers.get(LayerType.LEVEL)) {
+        for (Drawable d : layerManager.getLayers(LayerManager.LayerType.LEVEL_TOP)) {
             d.draw(getGraphics2D(), - (int) (Math.sin(this.i) * 200));
         }
+
 
     }
 }
