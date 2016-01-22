@@ -1,4 +1,4 @@
-package dez.game.engine.helpers;
+package dez.tank.helpers;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

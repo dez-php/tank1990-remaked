@@ -1,4 +1,4 @@
-package dez.game.engine.helpers;
+package dez.tank.helpers;
 
 import java.io.FileReader;
 import java.io.IOException;

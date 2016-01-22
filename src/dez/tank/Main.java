@@ -1,7 +1,7 @@
-package dez.game.tank.main;
+package dez.tank;
 
-import dez.game.engine.Engine;
-import dez.game.tank.game.GameEngine;
+import dez.tank.game.Engine;
+import dez.tank.game.GameEngine;
 
 public class Main {
 

@@ -1,8 +1,7 @@
-package dez.game.engine.helpers;
+package dez.tank.helpers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 abstract public class ResourceLoader {
 

@@ -1,4 +1,4 @@
-package dez.game.engine.graphics;
+package dez.tank.graphics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,21 +9,20 @@ import java.util.Arrays;
 
 public class GameWindow {
 
-    public static JFrame window;
-    public static Canvas windowContent;
-
-    public static BufferedImage bufferedImage;
-    public static BufferStrategy bufferStrategy;
-    public static int[] bufferedData;
-    public static Graphics2D graphics2D;
-
-    public static int WIDTH;
-    public static int HEIGHT;
+    public static int    WIDTH;
+    public static int    HEIGHT;
     public static String TITLE;
-
     public static boolean isCreated = false;
 
-    public static void create(int width, int height, String title) {
+    public JFrame window;
+    public Canvas windowContent;
+
+    public BufferedImage  bufferedImage;
+    public BufferStrategy bufferStrategy;
+    public int[]          bufferedData;
+    public Graphics2D     graphics2D;
+
+    public GameWindow(int width, int height, String title) {
 
         if (isCreated) {
             return;
@@ -59,29 +58,29 @@ public class GameWindow {
 
     }
 
-    public static void updateBuffer() {
+    public void updateBuffer() {
         bufferStrategy.getDrawGraphics().drawImage(bufferedImage, 0, 0, null);
         bufferStrategy.show();
     }
 
-    public static void clear() {
-        Arrays.fill(bufferedData, 0xff333333);
+    public void clear() {
+        Arrays.fill(this.bufferedData, 0xffffffff);
     }
 
-    public static Graphics2D getGraphics() {
+    public Graphics2D getGraphics() {
         return graphics2D;
     }
 
-    public static JFrame getWindow() {
+    public JFrame getWindow() {
         return window;
     }
 
-    public static void setTitle(String newTitle) {
+    public void setTitle(String newTitle) {
         window.setTitle(TITLE + newTitle);
     }
 
-    public static void close() {
-        if (! isCreated) {
+    public void close() {
+        if (!isCreated) {
             return;
         }
 

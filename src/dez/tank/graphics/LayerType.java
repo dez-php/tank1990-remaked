@@ -1,4 +1,4 @@
-package dez.game.engine.graphics;
+package dez.tank.graphics;
 
 public enum LayerType {
 

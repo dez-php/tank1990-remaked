@@ -1,10 +1,11 @@
-package dez.game.engine;
+package dez.tank.game;
 
-import dez.game.engine.graphics.Drawable;
-import dez.game.engine.graphics.GameWindow;
-import dez.game.engine.graphics.LayerType;
-import dez.game.engine.helpers.ResourceConfig;
-import dez.game.engine.helpers.Time;
+import dez.tank.graphics.Drawable;
+import dez.tank.graphics.GameWindow;
+import dez.tank.graphics.LayerManager;
+import dez.tank.graphics.LayerType;
+import dez.tank.helpers.ResourceConfig;
+import dez.tank.helpers.Time;
 
 import java.awt.*;
 import java.io.IOException;
@@ -13,25 +14,24 @@ import java.util.List;
 
 abstract public class Engine implements Runnable {
 
-    private Graphics2D graphics2D;
-    private Thread gameThread;
-    private Properties properties;
-
-    protected Map<LayerType, List<Drawable>> layers;
-
-    private boolean isRunning   = false;
-
-    public static int THREAD_IDLE_TIME = 1;
-    public static float UPDATE_RATE = 60.0f;
-    public static float UPDATE_TIME = Time.ONE_NANO_SECOND / UPDATE_RATE;
-
-    public float x = 0;
+    public static int   WIDTH            = 800;
+    public static int   HEIGHT           = 600;
+    public static int   THREAD_IDLE_TIME = 1;
+    public static float UPDATE_RATE      = 60.0f;
+    public static float UPDATE_TIME      = Time.ONE_NANO_SECOND / UPDATE_RATE;
+    public        float x                = 0;
+    protected Graphics2D   graphics2D;
+    protected Properties   properties;
+    protected GameWindow   gameWindow;
+    protected LayerManager layerManager;
+    private   Thread       gameThread;
+    private boolean isRunning = false;
 
     public Engine() throws IOException {
         properties = new ResourceConfig("resource/config.properties").loadProperties();
-        layers = new HashMap<>();
-        GameWindow.create(800, 600, properties.getProperty("title"));
-        graphics2D = GameWindow.getGraphics();
+        gameWindow = new GameWindow(WIDTH, HEIGHT, properties.getProperty("title"));
+        graphics2D = gameWindow.getGraphics();
+        layerManager = new LayerManager();
     }
 
     public Graphics2D getGraphics2D() {
@@ -40,11 +40,11 @@ abstract public class Engine implements Runnable {
 
     public synchronized void start() {
 
-        if(this.isRunning) {
+        if (this.isRunning) {
             return;
         }
 
-        isRunning  = true;
+        isRunning = true;
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -52,11 +52,11 @@ abstract public class Engine implements Runnable {
 
     public synchronized void stop() {
 
-        if(! isRunning) {
+        if (!isRunning) {
             return;
         }
 
-        isRunning  = false;
+        isRunning = false;
 
         try {
             gameThread.join();
@@ -77,21 +77,23 @@ abstract public class Engine implements Runnable {
     }
 
     private void renderData() {
-        GameWindow.clear();
+        gameWindow.clear();
+
         this.render();
-        GameWindow.updateBuffer();
+
+        gameWindow.updateBuffer();
     }
 
     public void run() {
 
-        long lastTime           = Time.nano();
-        float lostTime          = 0;
-        float totalElapsedTime  = 0;
-        int[] counters          = {0, 0, 0};
+        long  lastTime         = Time.nano();
+        float lostTime         = 0;
+        float totalElapsedTime = 0;
+        int[] counters         = {0, 0, 0};
 
         while (isRunning) {
 
-            long nowTime = Time.nano();
+            long nowTime     = Time.nano();
             long elapsedTime = nowTime - lastTime;
 
             lastTime = nowTime;
@@ -100,19 +102,19 @@ abstract public class Engine implements Runnable {
 
             boolean hasToRender = false;
 
-            while ( lostTime > 1 ) {
+            while (lostTime > 1) {
                 updateData();
                 lostTime--;
 
                 counters[1]++;
-                if(hasToRender) {
+                if (hasToRender) {
                     counters[2]++;
                 } else {
                     hasToRender = true;
                 }
             }
 
-            if(hasToRender) {
+            if (hasToRender) {
                 renderData();
                 counters[0]++;
             } else {
@@ -123,8 +125,8 @@ abstract public class Engine implements Runnable {
                 }
             }
 
-            if(totalElapsedTime >= (Time.ONE_NANO_SECOND / 2)) {
-                GameWindow.setTitle(" [FPS: " + (counters[0] * 2) + ", UPD: " + (counters[1] * 2) + ", UPD LOST: " + (counters[2] * 2) + "]");
+            if (totalElapsedTime >= Time.ONE_NANO_SECOND) {
+                gameWindow.setTitle(" [FPS: " + counters[0] + ", UPD: " + counters[1] + ", UPD LOST: " + counters[2] + "]");
                 totalElapsedTime = 0;
                 Arrays.fill(counters, 0);
             }
