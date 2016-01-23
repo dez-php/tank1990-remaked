@@ -64,7 +64,7 @@ public class GameWindow {
     }
 
     public void clear() {
-        Arrays.fill(this.bufferedData, 0xffffffff);
+        Arrays.fill(this.bufferedData, 0xff333333);
     }
 
     public Graphics2D getGraphics() {

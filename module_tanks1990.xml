@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_tanks1990" default="compile.module.tanks1990">
+  <dirname property="module.tanks1990.basedir" file="${ant.file.module_tanks1990}"/>
+  
+  <property name="module.jdk.home.tanks1990" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.tanks1990" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.tanks1990" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.tanks1990" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+  
+  <property name="tanks1990.output.dir" value="${module.tanks1990.basedir}/out/production/Tanks1990"/>
+  <property name="tanks1990.testoutput.dir" value="${module.tanks1990.basedir}/out/test/Tanks1990"/>
+  
+  <path id="tanks1990.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tanks1990.module.production.classpath">
+    <path refid="${module.jdk.classpath.tanks1990}"/>
+  </path>
+  
+  <path id="tanks1990.runtime.production.module.classpath">
+    <pathelement location="${tanks1990.output.dir}"/>
+  </path>
+  
+  <path id="tanks1990.module.classpath">
+    <path refid="${module.jdk.classpath.tanks1990}"/>
+    <pathelement location="${tanks1990.output.dir}"/>
+  </path>
+  
+  <path id="tanks1990.runtime.module.classpath">
+    <pathelement location="${tanks1990.testoutput.dir}"/>
+    <pathelement location="${tanks1990.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tanks1990">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tanks1990">
+    <patternset refid="excluded.from.module.tanks1990"/>
+  </patternset>
+  
+  <path id="tanks1990.module.sourcepath">
+    <dirset dir="${module.tanks1990.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tanks1990" depends="compile.module.tanks1990.production,compile.module.tanks1990.tests" description="Compile module Tanks1990"/>
+  
+  <target name="compile.module.tanks1990.production" depends="register.custom.compilers" description="Compile module Tanks1990; production classes">
+    <mkdir dir="${tanks1990.output.dir}"/>
+    <javac2 destdir="${tanks1990.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tanks1990}/javac">
+      <compilerarg line="${compiler.args.tanks1990}"/>
+      <bootclasspath refid="tanks1990.module.bootclasspath"/>
+      <classpath refid="tanks1990.module.production.classpath"/>
+      <src refid="tanks1990.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tanks1990"/>
+    </javac2>
+    
+    <copy todir="${tanks1990.output.dir}">
+      <fileset dir="${module.tanks1990.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tanks1990.tests" depends="register.custom.compilers,compile.module.tanks1990.production" description="compile module Tanks1990; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tanks1990" description="cleanup module">
+    <delete dir="${tanks1990.output.dir}"/>
+    <delete dir="${tanks1990.testoutput.dir}"/>
+  </target>
+</project>

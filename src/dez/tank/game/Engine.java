@@ -6,6 +6,7 @@ import dez.tank.graphics.LayerManager;
 import dez.tank.graphics.LayerType;
 import dez.tank.helpers.ResourceConfig;
 import dez.tank.helpers.Time;
+import dez.tank.io.Input;
 
 import java.awt.*;
 import java.io.IOException;
@@ -19,19 +20,28 @@ abstract public class Engine implements Runnable {
     public static int   THREAD_IDLE_TIME = 1;
     public static float UPDATE_RATE      = 60.0f;
     public static float UPDATE_TIME      = Time.ONE_NANO_SECOND / UPDATE_RATE;
+
+    public static LayerManager layerManager;
+
     public        float x                = 0;
+
     protected Graphics2D   graphics2D;
     protected Properties   properties;
     protected GameWindow   gameWindow;
-    protected LayerManager layerManager;
+    protected Input        input;
+
     private   Thread       gameThread;
     private boolean isRunning = false;
 
     public Engine() throws IOException {
-        properties = new ResourceConfig("resource/config.properties").loadProperties();
-        gameWindow = new GameWindow(WIDTH, HEIGHT, properties.getProperty("title"));
-        graphics2D = gameWindow.getGraphics();
+        this.properties = new ResourceConfig("resource/config.properties").loadProperties();
+        this.gameWindow = new GameWindow(WIDTH, HEIGHT, properties.getProperty("title"));
+        this.graphics2D = gameWindow.getGraphics();
+        this.input = new Input();
+
         layerManager = new LayerManager();
+
+        gameWindow.getWindow().add(input);
     }
 
     public Graphics2D getGraphics2D() {
